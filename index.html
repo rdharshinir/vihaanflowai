@@ -1,5 +1,4 @@
-
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -99,7 +98,7 @@ body{background:var(--bg-dark);color:var(--cream);font-family:-apple-system,Blin
   </div>
   <p class="hero-sub">Stop copying random prompts. Learn the one method that makes Claude actually understand what you need — built for Indian freelancers, students, shop owners, and job seekers.</p>
   <div class="hero-actions">
-    <button class="btn-primary" onclick="goToRegister()">Get the Guide — ₹599</button>
+    <button class="btn-primary" onclick="goToRegister()">Get the Guide</button>
     <a href="#what-you-get" class="btn-secondary">See What's Inside</a>
   </div>
 </section>
@@ -167,10 +166,7 @@ body{background:var(--bg-dark);color:var(--cream);font-family:-apple-system,Blin
   <h2 class="section-title serif">Get Started Today</h2>
   <p class="section-sub">Instant download. Read on any device. No subscription.</p>
   <div style="text-align:center;">
-    <div class="price-row" style="justify-content:center;">
-      <span class="price-strike">₹1,499</span><span class="price-now">₹599</span>
-    </div>
-    <button class="btn-primary" onclick="goToRegister()" style="margin-top:12px;">Buy Now — ₹599</button>
+    <button class="btn-primary" onclick="goToRegister()" style="margin-top:12px;">Get the Guide</button>
   </div>
 </section>
 
@@ -315,7 +311,7 @@ const BUMP_PRICE = 99;    // SPICE Prompt Vault bump-offer add-on price
 const FIXED_TAX = 19.30;  // Flat tax amount added to every order (not a percentage)
 
 // PASTE YOUR RAZORPAY PUBLIC KEY ID HERE (Dashboard -> Settings -> API Keys)
-const RAZORPAY_KEY_ID = "rzp_live_XXXXXXXXXXXX";
+const RAZORPAY_KEY_ID = "rzp_live_T4K33bHcRul9Bo";
 
 const PRODUCTS = {
   book: { title: "Claude Unlocked: The SPICE Method", files: ["book_pdf", "book_docx"] },
@@ -494,6 +490,18 @@ function showThankYou(productKey, includeVault) {
     a.textContent = "Download " + (file.name.endsWith(".pdf") ? "PDF" : "Word (.docx)");
     linksDiv.appendChild(a);
   });
+
+  // Inject WhatsApp Community Button
+  const waBtn = document.createElement("a");
+  waBtn.href = "YOUR_WHATSAPP_LINK_HERE";
+  waBtn.target = "_blank";
+  waBtn.className = "btn-secondary";
+  waBtn.style.marginBottom = "10px";
+  waBtn.style.backgroundColor = "#25D366";
+  waBtn.style.color = "white";
+  waBtn.style.border = "none";
+  waBtn.textContent = "Join our WhatsApp Community";
+  linksDiv.appendChild(waBtn);
 
   document.getElementById("tyOverlay").classList.add("show");
 }
