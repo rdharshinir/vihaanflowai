@@ -502,6 +502,13 @@ function showThankYou(productKey, includeVault) {
   waBtn.style.border = "none";
   waBtn.textContent = "Join our WhatsApp Community";
   linksDiv.appendChild(waBtn);
+  const waNote = document.createElement("p");
+  waNote.style.fontSize = "13px";
+  waNote.style.color = "var(--muted)";
+  waNote.style.marginTop = "8px";
+  waNote.style.marginBottom = "0px";
+  waNote.textContent = "Join to get exclusive Claude AI tips, priority support, and daily prompt templates!";
+  linksDiv.appendChild(waNote);
 
   document.getElementById("tyOverlay").classList.add("show");
 }
@@ -529,3 +536,4 @@ function showThankYou(productKey, includeVault) {
 </script>
 </body>
 </html>
+
