@@ -384,6 +384,8 @@ function goToCheckout() {
   document.getElementById("checkoutPage").style.display = "block";
   window.scrollTo(0, 0);
   if (!location.hash) history.pushState(null, "", "#checkout");
+  // Meta Pixel: track users who reach checkout (filled form, did not pay) - retargeting drop-off audience
+  if (typeof fbq === "function") { fbq("track", "InitiateCheckout"); }
 }
 
 function backToLanding() {
