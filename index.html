@@ -69,6 +69,48 @@ body{background:var(--bg-dark);color:var(--cream);font-family:-apple-system,Blin
 .ty-card .btn-primary{display:block;margin-bottom:12px;}
 .ty-close{margin-top:16px;background:none;border:none;color:var(--muted2);font-size:13px;cursor:pointer;text-decoration:underline;}
 @media (max-width:640px){.spice-dot{width:52px;height:52px;font-size:20px;}}
+
+.toast-notification {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  background: var(--bg-darkest);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+  z-index: 1000;
+  transform: translateY(100px);
+  opacity: 0;
+  transition: all 0.5s ease;
+}
+.toast-notification.show {
+  transform: translateY(0);
+  opacity: 1;
+}
+.toast-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: bold;
+}
+.toast-text {
+  font-size: 13px;
+  color: var(--cream);
+}
+.toast-time {
+  font-size: 11px;
+  color: var(--muted);
+}
+
 </style>
 <!-- Meta Pixel Code -->
 <script>
@@ -257,6 +299,11 @@ src="https://www.facebook.com/tr?id=1679374083154128&ev=PageView&noscript=1"
 
   <div style="max-width:460px;margin:64px auto;padding:0 24px;">
     <div class="price-card featured">
+
+      <div style="background:var(--orange); color:var(--bg-darkest); text-align:center; padding:8px; border-radius:8px; margin-bottom:20px; font-weight:bold; font-size:14px;">
+        ⏳ High Demand: Your order is reserved for <span id="checkoutTimer">10:00</span>
+      </div>
+
       <div class="badge-top">Complete Guide</div>
       <h3 class="serif">Claude Unlocked</h3>
       <p class="desc">The complete SPICE Method guide — 19 chapters, built for India.</p>
@@ -277,6 +324,25 @@ src="https://www.facebook.com/tr?id=1679374083154128&ev=PageView&noscript=1"
           <strong style="color:var(--cream);">Add The SPICE Prompt Vault</strong> — 90+ ready-to-copy prompts, for just <strong style="color:var(--orange);">+₹99</strong>
         </span>
       </label>
+
+      
+      <div style="margin-bottom:16px;">
+        <div style="display:flex; gap:8px;">
+          <input type="text" id="promoCode" placeholder="Promo code (try SPICE20)" style="flex:1; padding:10px 14px; border-radius:8px; border:1px solid var(--border); background:var(--bg-dark2); color:var(--cream); font-size:14px;">
+          <button class="btn-secondary" onclick="applyPromo()" style="padding:10px 16px; font-size:14px;">Apply</button>
+        </div>
+        <p id="promoMessage" style="font-size:12px; color:var(--green); margin-top:6px; display:none;">Promo code applied!</p>
+      </div>
+
+      <div style="background:var(--bg-dark2); border-radius:12px; padding:16px; margin-bottom:20px;">
+        <h4 style="font-size:14px; margin-bottom:10px; color:var(--cream);">What others are saying</h4>
+        <div style="font-size:13px; color:#cfc5b6; border-left:3px solid var(--orange); padding-left:10px; margin-bottom:12px;">
+          "This vault saved me hours of prompting! The ₹99 offer is a no-brainer." <br><strong style="color:var(--muted);">- Rohan, Freelancer</strong>
+        </div>
+        <div style="font-size:13px; color:#cfc5b6; border-left:3px solid var(--orange); padding-left:10px;">
+          "Claude finally gives me exactly what I need for my agency." <br><strong style="color:var(--muted);">- Priya, Agency Owner</strong>
+        </div>
+      </div>
 
       <div style="border-top:1px solid var(--border);padding-top:16px;margin-bottom:20px;font-size:14px;">
         <div style="display:flex;justify-content:space-between;padding:4px 0;color:#cfc5b6;">
@@ -339,6 +405,69 @@ const PRODUCTS = {
 const SHEET_WEBAPP_URL = "https://script.google.com/macros/s/AKfycbzV8uRrB64maS4Aw96nSf1BzP3jpLdB0HSfmWabnjn1nBiOKkAKBj-Td3D5kZ1MybnPSg/exec";
 
 let registrationData = null;
+
+let promoDiscount = 0;
+
+function applyPromo() {
+  const code = document.getElementById("promoCode").value.trim().toUpperCase();
+  const msg = document.getElementById("promoMessage");
+  if (code === "SPICE20") {
+    promoDiscount = 0.20; // 20% off base price
+    msg.textContent = "20% discount applied!";
+    msg.style.color = "var(--green)";
+    msg.style.display = "block";
+  } else {
+    promoDiscount = 0;
+    msg.textContent = "Invalid promo code.";
+    msg.style.color = "var(--orange)";
+    msg.style.display = "block";
+  }
+  updateCheckoutTotal();
+}
+
+// Timer logic
+function startTimer() {
+  let timeLeft = 600; // 10 minutes
+  const timerEl = document.getElementById("checkoutTimer");
+  if(!timerEl) return;
+  setInterval(() => {
+    if (timeLeft <= 0) return;
+    timeLeft--;
+    const m = Math.floor(timeLeft / 60);
+    const s = timeLeft % 60;
+    timerEl.textContent = m + ":" + (s < 10 ? "0" : "") + s;
+  }, 1000);
+}
+setTimeout(startTimer, 1000);
+
+// Toast Notification
+function showToast() {
+  const names = ["Rahul from Mumbai", "Sneha from Delhi", "Amit from Pune", "Neha from Bangalore"];
+  const name = names[Math.floor(Math.random() * names.length)];
+  
+  let toast = document.getElementById("purchaseToast");
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.id = "purchaseToast";
+    toast.className = "toast-notification";
+    toast.innerHTML = `
+      <div class="toast-img">✓</div>
+      <div>
+        <div class="toast-text"><strong>${name}</strong> just bought Claude Unlocked!</div>
+        <div class="toast-time">A few seconds ago</div>
+      </div>
+    `;
+    document.body.appendChild(toast);
+  } else {
+    toast.querySelector('.toast-text strong').textContent = name;
+  }
+  
+  setTimeout(() => toast.classList.add("show"), 1000);
+  setTimeout(() => toast.classList.remove("show"), 6000);
+}
+setInterval(showToast, 25000);
+setTimeout(showToast, 5000);
+
 
 function goToRegister() {
   document.getElementById("landingPage").style.display = "none";
@@ -427,14 +556,15 @@ function money(n) {
 
 function calcCheckoutTotals() {
   const bumpChecked = document.getElementById("bumpCheckbox").checked;
-  const subtotal = BASE_PRICE + (bumpChecked ? BUMP_PRICE : 0);
+  const discountAmount = BASE_PRICE * promoDiscount;
+  const subtotal = BASE_PRICE - discountAmount + (bumpChecked ? BUMP_PRICE : 0);
   const tax = FIXED_TAX;
   const total = subtotal + tax;
-  return { bumpChecked, subtotal, tax, total };
+  return { bumpChecked, subtotal, tax, total, discountAmount };
 }
 
 function updateCheckoutTotal() {
-  const { subtotal, tax, total } = calcCheckoutTotals();
+  const { subtotal, tax, total, discountAmount } = calcCheckoutTotals();
   document.getElementById("lineSubtotal").textContent = money(subtotal);
   document.getElementById("lineTax").textContent = money(tax);
   document.getElementById("lineTotal").textContent = money(total);
