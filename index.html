@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -639,11 +639,20 @@ function showThankYou(productKey, includeVault) {
   const product = PRODUCTS[productKey];
   if (!product) return;
 
-  let fileKeys = [...product.files];
+  // Determine which files to show based on payment:
+  // - ₹599 only (no vault): show only the book PDF
+  // - ₹599 + ₹99 (with vault): show book PDF + vault PDF
+  let fileKeys = [];
   let title = product.title;
   if (productKey === "book" && includeVault) {
-    fileKeys = fileKeys.concat(PRODUCTS.vault.files);
+    // Paid for both: show book PDF and vault PDF
+    fileKeys = ["book_pdf", "vault_pdf"];
     title = "Claude Unlocked + The SPICE Prompt Vault";
+  } else if (productKey === "book") {
+    // Paid ₹599 only: show only book PDF
+    fileKeys = ["book_pdf"];
+  } else {
+    fileKeys = [...product.files];
   }
 
   document.getElementById("tyText").textContent =
@@ -662,7 +671,14 @@ function showThankYou(productKey, includeVault) {
     a.download = file.name;
     a.className = "btn-primary";
     a.style.marginBottom = "10px";
-    a.textContent = "Download " + (file.name.endsWith(".pdf") ? "PDF" : "Word (.docx)");
+    // Use descriptive labels to distinguish the two PDFs
+    if (fileKey === "book_pdf") {
+      a.textContent = "Download PDF" + (fileKeys.length > 1 ? " (Claude Unlocked)" : "");
+    } else if (fileKey === "vault_pdf") {
+      a.textContent = "Download PDF (Prompt Vault)";
+    } else {
+      a.textContent = "Download " + (file.name.endsWith(".pdf") ? "PDF" : "Word (.docx)");
+    }
     linksDiv.appendChild(a);
   });
 
