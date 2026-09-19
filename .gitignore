@@ -1,1 +1,6 @@
 .env
+node_modules/
+pixel_changes.diff
+check_pixel.js
+package.json
+package-lock.json
