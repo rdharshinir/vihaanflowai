@@ -596,10 +596,24 @@ function openCheckout() {
   // Step 1: Ask Apps Script to create a Razorpay order (needs Key Secret, safe server-side)
   fetch(SHEET_WEBAPP_URL, {
     method: "POST",
+    redirect: "follow",
     headers: { "Content-Type": "text/plain" },
     body: JSON.stringify({ action: "createOrder", amount: amountPaise, currency: "INR" }),
   })
-    .then(function(r) { return r.json(); })
+    .then(function(r) {
+      return r.text().then(function(text) {
+        // Guard: Apps Script sometimes returns HTML redirect/error page
+        // (e.g. when not deployed as "Anyone, even anonymous").
+        if (text.trim().startsWith("<")) {
+          throw new Error(
+            "Our payment server is temporarily unavailable. Please email ravindra.mom96@gmail.com " +
+            "with subject \u201cPayment Help\u201d and we\u2019ll sort it out within the hour."
+          );
+        }
+        try { return JSON.parse(text); }
+        catch(e) { throw new Error("Unexpected server response. Please try again or email ravindra.mom96@gmail.com."); }
+      });
+    })
     .then(function(data) {
       if (!data.order_id) throw new Error(data.error || "Could not create order. Try again.");
 
