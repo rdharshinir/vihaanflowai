@@ -324,7 +324,7 @@ src="https://www.facebook.com/tr?id=1679374083154128&ev=PageView&noscript=1"
       <div class="badge-top">Complete Guide</div>
       <h3 class="serif">Claude Unlocked</h3>
       <p class="desc">The complete SPICE Method guide — 19 chapters, built for India.</p>
-      <div class="price-row"><span class="price-strike">₹1,499</span><span class="price-now">₹599</span></div>
+      <div class="price-row"><span class="price-strike">₹1,499</span><span class="price-now">₹299</span></div>
       <ul class="price-list">
         <li>19 full chapters, 60+ pages</li>
         <li>The SPICE Method framework</li>
@@ -406,9 +406,9 @@ const FILES = {
 
 // ====== PRICING CONFIG ======
 // Change these numbers if your pricing ever changes — everything below recalculates automatically.
-const BASE_PRICE = 599;   // Claude Unlocked selling price
+const BASE_PRICE = 299;   // Claude Unlocked selling price
 const BUMP_PRICE = 99;    // SPICE Prompt Vault bump-offer add-on price
-const FIXED_TAX = 19.30;  // Flat tax amount added to every order (not a percentage)
+const FIXED_TAX = 9.50;  // Flat tax amount added to every order (not a percentage)
 
 // PASTE YOUR RAZORPAY PUBLIC KEY ID HERE (Dashboard -> Settings -> API Keys)
 const RAZORPAY_KEY_ID = "rzp_live_TcFKrFl1Fc0S0a";
@@ -667,8 +667,8 @@ function showThankYou(productKey, includeVault) {
   if (!product) return;
 
   // Determine which files to show based on payment:
-  // - ₹599 only (no vault): show only the book PDF
-  // - ₹599 + ₹99 (with vault): show book PDF + vault PDF
+  // - ₹299 only (no vault): show only the book PDF
+  // - ₹299 + ₹99 (with vault): show book PDF + vault PDF
   let fileKeys = [];
   let title = product.title;
   if (productKey === "book" && includeVault) {
@@ -676,7 +676,7 @@ function showThankYou(productKey, includeVault) {
     fileKeys = ["book_pdf", "vault_pdf"];
     title = "Claude Unlocked + The SPICE Prompt Vault";
   } else if (productKey === "book") {
-    // Paid ₹599 only: show only book PDF
+    // Paid ₹299 only: show only book PDF
     fileKeys = ["book_pdf"];
   } else {
     fileKeys = [...product.files];
@@ -750,7 +750,7 @@ function showThankYou(productKey, includeVault) {
     showThankYou("book", vaultIncluded);
     if (typeof fbq !== "undefined") {
       fbq("track", "Purchase", {
-        value: vaultIncluded ? 698 : 599,
+        value: vaultIncluded ? 398 : 299,
         currency: "INR"
       });
     }
